@@ -26,19 +26,22 @@ A three-level hierarchical classification pipeline for single-cell RNA-seq data,
 
 ## Overview
 
-The pipeline classifies single-cell RNA-seq data in three consecutive levels:
+The pipeline consists of **three independent models**, each trained and run separately on the same input data. They are not connected - running one does not feed into another.
 
 ```
 Input: raw .h5ad (scRNA-seq counts)
          |
-    [ Level 1 ] Brain vs Non-Brain  (binary, scGPT_human weights, frozen encoder)
-         |
-    [ Level 2 ] Cell Type           (17 classes, scGPT_brain weights, fine-tuned)
-         |
-    [ Level 3 ] Subtype             (22 biological groups, scGPT_brain weights, fine-tuned)
+         ├──► [ Level 1 ] Brain vs Non-Brain  (binary, scGPT_human weights, frozen encoder)
+         │                → results_l1.csv
+         │
+         ├──► [ Level 2 ] Cell Type           (17 classes, scGPT_brain weights, fine-tuned)
+         │                → results_l2.csv
+         │
+         └──► [ Level 3 ] Subtype             (22 biological groups, scGPT_brain weights, fine-tuned)
+                          → results_l3.csv
 ```
 
-Each level applies a **confidence-based rejection** mechanism: predictions below a threshold are flagged as ambiguous or escalated to a coarser label rather than returned as wrong guesses.
+Each level produces its own independent output CSV. Each level also applies a **confidence-based rejection** mechanism: predictions below a threshold are flagged as ambiguous or escalated to a coarser label rather than returned as wrong guesses.
 
 Training data is the ABC Atlas non-neuron brain dataset (~888k cells, ~59k genes). The non-brain reference is PBMC 10k.
 
@@ -113,22 +116,22 @@ Inference requires **two kinds of weights**- both are already present in `scGPT/
 ```
 scGPT/save/
 ├── scGPT_human/          # Used by Level 1 (brain vs non-brain)
-│   ├── best_model.pt     # 196 MB ✓
-│   ├── vocab.json        # 1.3 MB ✓
-│   └── args.json         # ✓
+│   ├── best_model.pt     # 196 MB 
+│   ├── vocab.json        # 1.3 MB 
+│   └── args.json         
 └── scGPT_brain/          # Used by Levels 2 and 3
-    ├── best_model.pt     # 196 MB ✓
-    ├── vocab.json        # 1.3 MB ✓
-    └── args.json         # ✓
+    ├── best_model.pt     # 196 MB 
+    ├── vocab.json        # 1.3 MB 
+    └── args.json         
 ```
 
 **2. Fine-tuned level weights** (the trained classifiers- produced by the training scripts):
 
 ```
 scGPT/save/
-├── scGPT_level1_brain_vs_nonbrain/   # Trained Level 1 classifier ✓
-├── scGPT_level2_celltype/            # Trained Level 2 classifier ✓
-└── scGPT_level3_subtype/             # Trained Level 3 classifier ✓
+├── scGPT_level1_brain_vs_nonbrain/   # Trained Level 1 classifier 
+├── scGPT_level2_celltype/            # Trained Level 2 classifier 
+└── scGPT_level3_subtype/             # Trained Level 3 classifier 
 ```
 
 Each inference script loads the pretrained weights to construct the model, then overwrites the weights with the fine-tuned level checkpoint. **Both must be present for inference to work.**
@@ -476,15 +479,43 @@ python Inference/inference_level3.py --input data/cells.h5ad --output results/re
 
 ## Output Files Reference
 
-After running all three inference scripts and merging on `cell_idx`, each cell gets a row like:
+Each inference script produces its own independent CSV file.
 
+**results_l1.csv** (Level 1 - Brain vs Non-Brain):
 ```
+<<<<<<< HEAD
 cell_idx | l1_pred | l1_confidence | l2_pred           | l2_confidence | l3_pred                  | l3_confidence
 ---------|---------|---------------|-------------------|---------------|--------------------------|---------------
 0        | brain   | 0.97          | Oligodendrocyte   | 0.91          | Oligo_late_mature        | 0.88
 1        | brain   | 0.83          | Astrocyte         | 0.73          | Family:Astrocyte         | 0.68
 2        | brain   | 0.61          | Family:Glial      | 0.67          | rejected                 | 0.32
 3        | non_brain | 0.95        |-                 |-             |-                        |-
+=======
+cell_idx | l1_pred   | l1_raw_pred | l1_confidence | l1_brain_prob | l1_decision | is_brain
+---------|-----------|-------------|---------------|---------------|-------------|----------
+0        | brain     | brain       | 0.97          | 0.97          | accepted    | True
+1        | non_brain | non_brain   | 0.95          | 0.05          | accepted    | False
+2        | ambiguous | brain       | 0.41          | 0.41          | ambiguous   | False
+```
+
+**results_l2.csv** (Level 2 - Cell Type):
+```
+cell_idx | l2_pred         | l2_confidence | l2_decision
+---------|-----------------|---------------|-------------
+0        | Oligodendrocyte | 0.91          | specific
+1        | Family:Glial    | 0.67          | family
+2        | rejected        | 0.43          | rejected
+```
+
+**results_l3.csv** (Level 3 - Subtype):
+```
+cell_idx | l3_pred               | l3_confidence | l3_decision
+---------|-----------------------|---------------|------------------
+0        | Oligo_late_mature     | 0.88          | specific_subtype
+1        | Parent:Oligodendrocyte| 0.66          | parent_type
+2        | Family:Glial          | 0.47          | family
+3        | rejected              | 0.32          | rejected
+>>>>>>> 321147f (Fix: clarify three levels are independent models, separate output CSVs)
 ```
 
 Cells flagged as `ambiguous` at Level 1 or `rejected` at Level 2/3 are not wrong predictions- they simply did not meet the confidence threshold and should be treated as uncertain.
