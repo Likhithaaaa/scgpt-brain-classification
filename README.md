@@ -11,9 +11,9 @@ A three-level hierarchical classification pipeline for single-cell RNA-seq data,
 3. [Directory Layout](#directory-layout)
 4. [Data Preprocessing](#data-preprocessing)
 5. [Training](#training)
-   - [Level 1 — Brain vs Non-Brain](#level-1--brain-vs-non-brain)
-   - [Level 2 — Cell Type Classification](#level-2--cell-type-classification)
-   - [Level 3 — Subtype Classification](#level-3--subtype-classification)
+   - [Level 1- Brain vs Non-Brain](#level-1--brain-vs-non-brain)
+   - [Level 2- Cell Type Classification](#level-2--cell-type-classification)
+   - [Level 3- Subtype Classification](#level-3--subtype-classification)
 6. [Inference](#inference)
    - [Level 1 Inference](#level-1-inference)
    - [Level 2 Inference](#level-2-inference)
@@ -62,7 +62,7 @@ Three environment files are provided in `scGPT/`. Use whichever suits your setup
 
 | File | When to use |
 |------|-------------|
-| `environment.yml` | **Recommended starting point.** Version-pinned without build strings — works across Linux machines and is easier to resolve. |
+| `environment.yml` | **Recommended starting point.** Version-pinned without build strings- works across Linux machines and is easier to resolve. |
 | `environment_exact.yml` | Exact build strings included. Use this for bit-for-bit reproducibility on the same platform (Linux x86-64, CUDA 11.7). |
 | `requirements.txt` | pip-only install, no conda. Use if you are managing your own environment or are on a system without conda. |
 
@@ -82,7 +82,7 @@ Three environment files are provided in `scGPT/`. Use whichever suits your setup
 | numpy | 1.26.4 |
 | pandas | 2.3.1 |
 
-**Option A — conda (recommended):**
+**Option A- conda (recommended):**
 
 ```bash
 # Flexible install (resolves dependencies for your platform)
@@ -96,7 +96,7 @@ conda activate scgpt
 
 > The `prefix` field at the bottom of both `.yml` files points to `/home/ubuntu/miniforge/envs/scgpt` (the original DeNBI machine). Conda ignores this when you use `conda env create`; the environment will be installed in your default conda envs directory.
 
-**Option B — pip only:**
+**Option B- pip only:**
 
 ```bash
 pip install -r scGPT/requirements.txt
@@ -106,7 +106,7 @@ pip install -r scGPT/requirements.txt
 
 ### Model Weights
 
-Inference requires **two kinds of weights** — both are already present in `scGPT/save/` and do not need to be downloaded or retrained:
+Inference requires **two kinds of weights**- both are already present in `scGPT/save/` and do not need to be downloaded or retrained:
 
 **1. Pretrained scGPT foundation weights** (used to build the model architecture and initialise the encoder):
 
@@ -122,7 +122,7 @@ scGPT/save/
     └── args.json         # ✓
 ```
 
-**2. Fine-tuned level weights** (the trained classifiers — produced by the training scripts):
+**2. Fine-tuned level weights** (the trained classifiers- produced by the training scripts):
 
 ```
 scGPT/save/
@@ -133,7 +133,7 @@ scGPT/save/
 
 Each inference script loads the pretrained weights to construct the model, then overwrites the weights with the fine-tuned level checkpoint. **Both must be present for inference to work.**
 
-> **When to retrain:** The existing trained weights are ready to use as-is. Retraining is only needed if you change the training configuration — for example, using a different number of HVGs (`n_hvg`), a different dataset, or different hyperparameters. Changing `n_hvg` in particular will invalidate the saved `hvg_genes.pkl` and require re-running both training and inference from scratch.
+> **When to retrain:** The existing trained weights are ready to use as-is. Retraining is only needed if you change the training configuration- for example, using a different number of HVGs (`n_hvg`), a different dataset, or different hyperparameters. Changing `n_hvg` in particular will invalidate the saved `hvg_genes.pkl` and require re-running both training and inference from scratch.
 
 **Note on git:** All `.pt` weight files are excluded from the repository via `.gitignore` (they total ~6 GB). Download them as described below before running anything.
 
@@ -141,13 +141,13 @@ Each inference script loads the pretrained weights to construct the model, then 
 
 ### Downloading the weights
 
-**Pretrained scGPT foundation weights** — download from the [scGPT release page](https://github.com/bowang-lab/scGPT) and place at:
+**Pretrained scGPT foundation weights**- download from the [scGPT release page](https://github.com/bowang-lab/scGPT) and place at:
 ```
 scGPT/save/scGPT_human/   ← best_model.pt, vocab.json, args.json
 scGPT/save/scGPT_brain/   ← best_model.pt, vocab.json, args.json
 ```
 
-**Trained level classifiers** — hosted on HuggingFace Hub at [`likhithav11/scgpt-brain-classification`](https://huggingface.co/likhithav11/scgpt-brain-classification).
+**Trained level classifiers**- hosted on HuggingFace Hub at [`likhithav11/scgpt-brain-classification`](https://huggingface.co/likhithav11/scgpt-brain-classification).
 
 Download with:
 ```bash
@@ -166,7 +166,7 @@ snapshot_download(
 print("Done! Weights saved to scGPT/save/")
 ```
 
-The repo is public — no login required.
+The repo is public- no login required.
 
 ### Input Data
 
@@ -213,7 +213,7 @@ thesis code/
     └── Reference.h5ad                 # PBMC reference for Level 1 (put here)
 ```
 
-All paths in the scripts are relative to the `scGPT/` directory. Run all training and inference scripts from inside `scGPT/` — they reference `./save/` which resolves to `scGPT/save/`.
+All paths in the scripts are relative to the `scGPT/` directory. Run all training and inference scripts from inside `scGPT/`- they reference `./save/` which resolves to `scGPT/save/`.
 
 ---
 
@@ -228,11 +228,11 @@ Run this once before training to prepare the ABC Atlas data. The notebook:
 - Creates numeric label IDs for all hierarchy levels
 - Computes UMAP coordinates
 - Outputs to `./data/`:
-  - `metadata_L2_L3.csv` — per-cell metadata with cell type and subtype columns
-  - `gene_names.csv` — gene vocabulary
-  - `hierarchical_mappings.json` — label-to-ID mappings for all levels
-  - `adata_processed_L2_L3.h5ad` — processed AnnData ready for training
-  - `umap_visualization_L2_L3.png` — UMAP coloured by cell type
+  - `metadata_L2_L3.csv`- per-cell metadata with cell type and subtype columns
+  - `gene_names.csv`- gene vocabulary
+  - `hierarchical_mappings.json`- label-to-ID mappings for all levels
+  - `adata_processed_L2_L3.h5ad`- processed AnnData ready for training
+  - `umap_visualization_L2_L3.png`- UMAP coloured by cell type
 
 After preprocessing, optionally run the subtype collapsing script to map the 296 computational clusters into 22 biologically interpretable groups:
 
@@ -262,11 +262,11 @@ Each training script saves its best checkpoint and supporting artifacts to `./sa
 
 ---
 
-### Level 1 — Brain vs Non-Brain
+### Level 1- Brain vs Non-Brain
 
 **Script:** `scGPT/Train/level_1.py`
 
-Binary classification distinguishing brain cells from non-brain (PBMC) cells. The scGPT encoder is **frozen** — only the 3-layer classifier head is trained.
+Binary classification distinguishing brain cells from non-brain (PBMC) cells. The scGPT encoder is **frozen**- only the 3-layer classifier head is trained.
 
 **Key configuration** (edit at the top of `level_1.py`):
 
@@ -292,14 +292,14 @@ python Train/level_1.py
 
 **Artifacts saved to `./save/scGPT_level1_brain_vs_nonbrain/`:**
 
-- `best_model.pt` — best checkpoint by validation accuracy
-- `hvg_genes.pkl` — list of HVG gene names (required for inference)
-- `id_to_label.json` — integer → label mapping (`{0: "non_brain", 1: "brain"}`)
+- `best_model.pt`- best checkpoint by validation accuracy
+- `hvg_genes.pkl`- list of HVG gene names (required for inference)
+- `id_to_label.json`- integer → label mapping (`{0: "non_brain", 1: "brain"}`)
 - Confusion matrices, training curves, UMAP embeddings (PNG files)
 
 ---
 
-### Level 2 — Cell Type Classification
+### Level 2- Cell Type Classification
 
 **Script:** `scGPT/Train/level_2.py`
 
@@ -329,11 +329,11 @@ python Train/level_2.py
 - `best_model.pt`
 - `hvg_genes.pkl`
 - `id_to_label.json`
-- `taxonomy.json` — cell type family groupings for hierarchical rejection
+- `taxonomy.json`- cell type family groupings for hierarchical rejection
 
 ---
 
-### Level 3 — Subtype Classification
+### Level 3- Subtype Classification
 
 **Script:** `scGPT/Train/level_3.py`
 
@@ -364,7 +364,7 @@ python Train/level_3.py
 - `best_model.pt`
 - `hvg_genes.pkl`
 - `id_to_label.json`
-- `taxonomy.json` — subtype → parent cell type → family mappings
+- `taxonomy.json`- subtype → parent cell type → family mappings
 
 ---
 
@@ -484,10 +484,10 @@ cell_idx | l1_pred | l1_confidence | l2_pred           | l2_confidence | l3_pred
 0        | brain   | 0.97          | Oligodendrocyte   | 0.91          | Oligo_late_mature        | 0.88
 1        | brain   | 0.83          | Astrocyte         | 0.73          | Family:Astrocyte         | 0.68
 2        | brain   | 0.61          | Family:Glial      | 0.67          | rejected                 | 0.32
-3        | non_brain | 0.95        | —                 | —             | —                        | —
+3        | non_brain | 0.95        |-                 |-             |-                        |-
 ```
 
-Cells flagged as `ambiguous` at Level 1 or `rejected` at Level 2/3 are not wrong predictions — they simply did not meet the confidence threshold and should be treated as uncertain.
+Cells flagged as `ambiguous` at Level 1 or `rejected` at Level 2/3 are not wrong predictions- they simply did not meet the confidence threshold and should be treated as uncertain.
 
 ---
 
@@ -534,4 +534,4 @@ The `Geneformer/` directory contains equivalent training scripts using the [Gene
 
 Geneformer uses a different tokenisation strategy (rank-ordered gene tokens based on expression level) compared to scGPT's binned continuous expression encoding. The task structure, evaluation metrics, and output formats are identical to the scGPT scripts, making results directly comparable.
 
-Run the Geneformer scripts the same way as the scGPT training scripts. They require the Geneformer pretrained weights from HuggingFace — download and point the path constant at the top of each script to the local directory.
+Run the Geneformer scripts the same way as the scGPT training scripts. They require the Geneformer pretrained weights from HuggingFace- download and point the path constant at the top of each script to the local directory.
