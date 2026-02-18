@@ -1,0 +1,38 @@
+# ── Model weights ─────────────────────────────────────────────────────────────
+# Large PyTorch checkpoints (~196–584 MB each). Store these externally
+# (e.g. HuggingFace Hub) and document the download link in the README.
+*.pt
+*.pth
+*.ckpt
+
+# ── Data files ────────────────────────────────────────────────────────────────
+# Raw and processed single-cell datasets. Too large for git.
+*.h5ad
+*.h5
+*.loom
+
+# ── Python ────────────────────────────────────────────────────────────────────
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+
+# ── Jupyter ───────────────────────────────────────────────────────────────────
+.ipynb_checkpoints/
+
+# ── WandB ─────────────────────────────────────────────────────────────────────
+wandb/
+
+# ── Claude Code ───────────────────────────────────────────────────────────────
+.claude/
+
+# ── Upload scripts ────────────────────────────────────────────────────────────
+upload_weights.py
+
+# ── OS ────────────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db

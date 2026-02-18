@@ -1,0 +1,90 @@
+{
+  "Astro_fibrous (57-60)": {
+    "parent": "Astro",
+    "family": "Glial"
+  },
+  "Astro_protoplasmic (52-56)": {
+    "parent": "Astro",
+    "family": "Glial"
+  },
+  "Astro_reactive (61-64)": {
+    "parent": "Astro",
+    "family": "Glial"
+  },
+  "Bergmann_glia": {
+    "parent": "Bergmann",
+    "family": "Glial"
+  },
+  "COP": {
+    "parent": "COP",
+    "family": "Glial"
+  },
+  "Choroid_plexus": {
+    "parent": "Choroid",
+    "family": "Glial"
+  },
+  "Endothelial_arterial": {
+    "parent": "Endothelial",
+    "family": "Endothelial"
+  },
+  "Endothelial_arterial_capillary": {
+    "parent": "Endothelial",
+    "family": "Endothelial"
+  },
+  "Endothelial_capillary": {
+    "parent": "Endothelial",
+    "family": "Endothelial"
+  },
+  "Endothelial_specialized": {
+    "parent": "Endothelial",
+    "family": "Endothelial"
+  },
+  "Endothelial_venous": {
+    "parent": "Endothelial",
+    "family": "Endothelial"
+  },
+  "Endothelial_venous_capillary": {
+    "parent": "Endothelial",
+    "family": "Endothelial"
+  },
+  "Ependymal": {
+    "parent": "Ependymal",
+    "family": "Glial"
+  },
+  "Fibroblasts": {
+    "parent": "Fibroblasts",
+    "family": "Fibroblasts"
+  },
+  "Microglia_activated (8-12)": {
+    "parent": "Microglia",
+    "family": "Microglia"
+  },
+  "Microglia_homeostatic (4-7)": {
+    "parent": "Microglia",
+    "family": "Microglia"
+  },
+  "OPC": {
+    "parent": "OPC",
+    "family": "Glial"
+  },
+  "Oligo_early_mature (40-43)": {
+    "parent": "Oligo",
+    "family": "Glial"
+  },
+  "Oligo_late_mature (48-50)": {
+    "parent": "Oligo",
+    "family": "Glial"
+  },
+  "Oligo_mid_mature (44-47)": {
+    "parent": "Oligo",
+    "family": "Glial"
+  },
+  "Pericytes": {
+    "parent": "Pericytes",
+    "family": "Pericytes"
+  },
+  "Vascular_SMC": {
+    "parent": "Vascular",
+    "family": "Vascular"
+  }
+}

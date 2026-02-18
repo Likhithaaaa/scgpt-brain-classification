@@ -1,0 +1,26 @@
+{
+  "Astrocyte": {
+    "family": "Glial"
+  },
+  "Microglia": {
+    "family": "Immune"
+  },
+  "Macrophage": {
+    "family": "Immune"
+  },
+  "Oligodendrocyte": {
+    "family": "Glial"
+  },
+  "Endothelial": {
+    "family": "Vascular"
+  },
+  "T-Cell/Lymph.": {
+    "family": "Immune"
+  },
+  "Neuron": {
+    "family": "Neuronal"
+  },
+  "GBM": {
+    "family": "Tumor"
+  }
+}
