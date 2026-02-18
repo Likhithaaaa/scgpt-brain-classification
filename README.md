@@ -483,14 +483,6 @@ Each inference script produces its own independent CSV file.
 
 **results_l1.csv** (Level 1 - Brain vs Non-Brain):
 ```
-<<<<<<< HEAD
-cell_idx | l1_pred | l1_confidence | l2_pred           | l2_confidence | l3_pred                  | l3_confidence
----------|---------|---------------|-------------------|---------------|--------------------------|---------------
-0        | brain   | 0.97          | Oligodendrocyte   | 0.91          | Oligo_late_mature        | 0.88
-1        | brain   | 0.83          | Astrocyte         | 0.73          | Family:Astrocyte         | 0.68
-2        | brain   | 0.61          | Family:Glial      | 0.67          | rejected                 | 0.32
-3        | non_brain | 0.95        |-                 |-             |-                        |-
-=======
 cell_idx | l1_pred   | l1_raw_pred | l1_confidence | l1_brain_prob | l1_decision | is_brain
 ---------|-----------|-------------|---------------|---------------|-------------|----------
 0        | brain     | brain       | 0.97          | 0.97          | accepted    | True
