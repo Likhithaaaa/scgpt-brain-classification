@@ -43,7 +43,7 @@ Input: raw .h5ad (scRNA-seq counts)
 
 Each level produces its own independent output CSV. Each level also applies a **confidence-based rejection** mechanism: predictions below a threshold are flagged as ambiguous or escalated to a coarser label rather than returned as wrong guesses.
 
-Training data is the ABC Atlas non-neuron brain dataset (~888k cells, ~59k genes). The non-brain reference is PBMC 10k.
+Training data is the Allen Atlas non-neuron brain dataset (~888k cells, ~59k genes). The non-brain reference is PBMC 10k.
 
 ---
 
@@ -173,9 +173,16 @@ The repo is public- no login required.
 
 ### Input Data
 
-All input files must be in **AnnData `.h5ad` format**. The raw count matrix should be in `.X` (cells × genes), unnormalized. Gene names must be in `adata.var_names`.
+All input files must be provided in **AnnData (`.h5ad`) format**. The raw (unnormalized) count matrix should be stored in `adata.X` (cells × genes). Gene identifiers must be available in `adata.var_names`.
 
-The pipeline was developed and tested with the [ABC Atlas](https://portal.brain-map.org/atlases-and-data/bkp/abc-atlas) non-neuron dataset (`Nonneuron.h5ad`, ~888k cells) and a PBMC 10k reference (`Reference.h5ad`) for non-brain cells in Level 1.
+The pipeline was developed and tested using the **Allen Brain Atlas** as the primary brain reference, together with a **Uniklinikum clinical cohort** (glioblastoma). For Level 1 classification, we additionally include a **PBMC 10k reference from Scanpy** to represent non-brain immune cell populations.
+
+**Datasets used by level**
+
+* **Level 1 (brain vs. non-brain / broad classes):** Scanpy PBMC dataset + Uniklinikum glioblastoma cohort
+* **Level 2 (tumor cohort refinement):** Uniklinikum glioblastoma cohort
+* **Level 3 (fine-grained brain reference):** Allen Brain Atlas
+
 
 ---
 
@@ -212,7 +219,7 @@ thesis code/
 │   ├── gf_level_2.py
 │   └── gf_level_3.py
 └── data/
-    ├── Nonneuron.h5ad                 # ABC Atlas brain cells (put here)
+    ├── Nonneuron.h5ad                 # Allen Atlas brain cells (put here)
     └── Reference.h5ad                 # PBMC reference for Level 1 (put here)
 ```
 
@@ -224,9 +231,9 @@ All paths in the scripts are relative to the `scGPT/` directory. Run all trainin
 
 **Script:** `scGPT/PreProcessing.py` (Jupyter notebook)
 
-Run this once before training to prepare the ABC Atlas data. The notebook:
+Run this once before training to prepare the Allen Atlas data. The notebook:
 
-- Loads `Nonneuron.h5ad` and auto-detects the ABC Atlas column format
+- Loads `Nonneuron.h5ad` and auto-detects the Allen Atlas column format
 - Extracts cell type labels (Level 2) from subtype names by prefix matching (e.g. `Oligo_50_2996` → `Oligodendrocyte`)
 - Creates numeric label IDs for all hierarchy levels
 - Computes UMAP coordinates
