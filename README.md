@@ -1,6 +1,6 @@
 # Hierarchical Brain Cell Type Classification with scGPT
 
-A three-level hierarchical classification pipeline for single-cell RNA-seq data, built on top of the pretrained [scGPT](https://github.com/bowang-lab/scGPT) transformer model. Classifies cells progressively from coarse (brain vs non-brain) to fine-grained (297 subtypes collapsed to 22 biological groups).
+A three-level hierarchical classification pipeline for single-cell RNA-seq data, built on top of the pretrained [scGPT](https://github.com/bowang-lab/scGPT) transformer model. Classifies cells progressively from coarse (brain vs non-brain) to fine-grained (296 subtypes collapsed to 22 biological groups).
 
 ---
 
@@ -34,7 +34,7 @@ Input: raw .h5ad (scRNA-seq counts)
          ├──► [ Level 1 ] Brain vs Non-Brain  (binary, scGPT_human weights, frozen encoder)
          │                → results_l1.csv
          │
-         ├──► [ Level 2 ] Cell Type           (17 classes, scGPT_brain weights, fine-tuned)
+         ├──► [ Level 2 ] Cell Type           (8 classes, scGPT_brain weights, fine-tuned)
          │                → results_l2.csv
          │
          └──► [ Level 3 ] Subtype             (22 biological groups, scGPT_brain weights, fine-tuned)
@@ -108,8 +108,6 @@ pip install -r scGPT/requirements.txt
 > flash-attn requires a CUDA-capable GPU and a compatible compiler at install time. If installation fails, install without it and disable the fast transformer backend inside the training scripts by setting `use_fast_transformer=False` in the model constructor calls.
 
 ### Model Weights
-
-Inference requires **two kinds of weights**- both are already present in `scGPT/save/` and do not need to be downloaded or retrained:
 
 **1. Pretrained scGPT foundation weights** (used to build the model architecture and initialise the encoder):
 
@@ -347,7 +345,7 @@ python Train/level_2.py
 
 **Script:** `scGPT/Train/level_3.py`
 
-Fine-grained classification into 22 biological subtype groups. Builds on Level 2 and uses the brain-pretrained encoder. Class imbalance is handled with a `WeightedRandomSampler`.
+Fine-grained classification into 22 biological subtype groups. Class imbalance is handled with a `WeightedRandomSampler`.
 
 **Key configuration:**
 
@@ -514,7 +512,7 @@ cell_idx | l3_pred               | l3_confidence | l3_decision
 1        | Parent:Oligodendrocyte| 0.66          | parent_type
 2        | Family:Glial          | 0.47          | family
 3        | rejected              | 0.32          | rejected
->>>>>>> 321147f (Fix: clarify three levels are independent models, separate output CSVs)
+
 ```
 
 Cells flagged as `ambiguous` at Level 1 or `rejected` at Level 2/3 are not wrong predictions- they simply did not meet the confidence threshold and should be treated as uncertain.
@@ -549,6 +547,23 @@ otherwise              →  rejected
 `P_parent` and `P_family` are sums over all subtypes belonging to that parent or family group, as defined in `taxonomy.json`.
 
 Thresholds are set conservatively at Level 1 (τ = 0.45) to preserve sensitivity (avoid discarding real brain cells), and more strictly at Levels 2 and 3 where false specificity is more harmful.
+
+---
+## Results
+
+Results on the held-out test split (70/15/15 stratified) of each level's dataset.
+The clinical data cannot be shared, so these numbers cannot be reproduced from this repository alone.
+
+| Level | Task | Classes | Test cells | Accuracy | Balanced accuracy | Macro F1 | Hierarchical accuracy |
+|-------|------|---------|-----------:|---------:|------------------:|---------:|----------------------:|
+| 1 | Brain vs non-brain | 2 | 3,000 | 100% | 100% | - | - |
+| 2 | Cell type (clinical cohort) | 8 | 7,296 | 93.1% | 87.8% | 81.8% | 91.5% |
+| 3 | Subtype (Allen Brain Cell Atlas) | 22 | 22,500 | 91.9% | 88.3% | 84.9% | 95.1% |
+
+Accuracy is the fraction of correctly classified cells. Balanced accuracy is the mean per-class recall,
+so rare classes count as much as common ones. Hierarchical accuracy credits a cell when the
+fallback label (cell type or family) is correct, using the thresholds in the
+[Confidence Rejection System](#confidence-rejection-system) section.
 
 ---
 
