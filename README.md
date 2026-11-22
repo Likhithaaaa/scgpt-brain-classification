@@ -20,7 +20,8 @@ A three-level hierarchical classification pipeline for single-cell RNA-seq data,
    - [Level 3 Inference](#level-3-inference)
 7. [Output Files Reference](#output-files-reference)
 8. [Confidence Rejection System](#confidence-rejection-system)
-9. [Geneformer Baseline](#geneformer-baseline)
+9. [Results](#results)
+10. [Geneformer Baseline](#geneformer-baseline)
 
 ---
 
